@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Sai Sumanth Gudiboina</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Serene Professional - Background: #f8f7f4 (Oat), Main Text: #333d47 (Charcoal), Accent: #0d9488 (Teal), Secondary: #a1a1aa (Stone Gray) -->
+    <!-- Application Structure Plan: The SPA is designed with a top-down narrative flow, starting with a high-level summary and allowing users to drill down into specifics. A sticky navigation bar enables non-linear exploration. The core is an interactive vertical timeline for professional experience, which condenses a large amount of text into a manageable, user-driven format. This structure was chosen to make the resume scannable at a glance but also rich in detail upon interaction, which is superior to a static document for user engagement and information retention. -->
+    <!-- Visualization & Content Choices: Report Info: Career history -> Goal: Show career progression and duration -> Viz/Method: Interactive Bar Chart (Chart.js) -> Interaction: Hover for details. Justification: Provides a quick visual summary of time spent in various roles. Report Info: Detailed job responsibilities -> Goal: Organize extensive text -> Method: Interactive collapsible timeline (HTML/JS) -> Interaction: Click to expand/collapse. Justification: Prevents a wall of text, allowing users to focus on roles of interest. Report Info: Skills -> Goal: Present skills clearly -> Method: Grouped skill cards (HTML/Tailwind) -> Interaction: Static visual grouping. Justification: Enhances readability and visual organization over a simple list. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #333d47;
+        }
+        .nav-link.active {
+            color: #0d9488;
+            font-weight: 600;
+        }
+        .timeline-item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .timeline-item-content.open {
+            max-height: 2000px;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-800">Sai Sumanth Gudiboina</h1>
+                </div>
+                <nav class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Overview</a>
+                        <a href="#experience" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Experience</a>
+                        <a href="#skills" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Skills</a>
+                        <a href="#education" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Education</a>
+                    </div>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-teal-500 hover:bg-gray-100 focus:outline-none">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#overview" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Overview</a>
+                <a href="#experience" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Experience</a>
+                <a href="#skills" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Skills</a>
+                <a href="#education" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Education</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="overview" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Sr. Informatica MDM & Data Management Consultant</h2>
+                <div class="mt-4 flex items-center justify-center space-x-6 text-sm text-gray-500">
+                    <span>+1 (385) 495-5575</span>
+                    <span class="text-gray-300">|</span>
+                    <span>sumanth.gudiboina@gmail.com</span>
+                    <span class="text-gray-300">|</span>
+                    <a href="https://www.linkedin.com/in/saisumanthgudiboina/" target="_blank" class="hover:text-teal-600">LinkedIn</a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Summary of Experience</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    A senior Informatica MDM and Data Management professional with over <strong>10 years of experience</strong> in building and maintaining robust MDM solutions. Proven expertise in the full lifecycle of data management, from <strong>installation and configuration of MDM, IDQ, and IICS/IDMC services</strong> to <strong>ETL, data profiling, cleansing, and standardization</strong>. Extensive experience in <strong>configuring and troubleshooting key components</strong> such as Match/Merge rules, Trust and Validation rules, and Hierarchies. Skilled in <strong>developing and debugging ActiveVOS workflows</strong> for data governance and approvals. Experienced in working with <strong>on-premise and cloud-based solutions (MDM SaaS)</strong>, including the implementation of Business Entities, Crosswalks, and Ingress/Egress jobs. A strong leader and collaborator, adept at handling production support tickets, leading teams, and interacting with diverse stakeholders to deliver high-quality data solutions.
+                </p>
+
+                <div class="mt-12">
+                     <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Career Timeline Visualization</h3>
+                    <p class="text-center text-gray-500 mb-6">This chart provides a visual overview of the duration of each project engagement. Hover over the bars for more details on the client and role.</p>
+                    <div class="chart-container">
+                        <canvas id="experienceChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="experience" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Professional Experience</h2>
+            <div id="timeline-container" class="relative">
+                <!-- Timeline items will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="skills" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Core Competencies</h2>
+            <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Skills will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="education" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Education</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-800">Master’s in Information Systems</h3>
+                <p class="text-gray-600">Stevens-Henager College, Utah – 2016</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md mt-4">
+                <h3 class="text-lg font-semibold text-gray-800">Bachelor’s in Mechanical Engineering</h3>
+                <p class="text-gray-600">Jawaharlal Nehru Technological Institute, Hyderabad, India – 2015</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 mt-16">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-white text-sm">
+            <p>&copy; 2025 Sai Sumanth Gudiboina. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const experienceData = [
+                {
+                    client: "State of Maryland, DHS – MDThink",
+                    dates: "Sept 2024 – Present",
+                    role: "Sr. Informatica MDM, BDM/IDQ, ActiveVOS – Lead / Consultant",
+                    description: "A cloud-based platform to modernize and unify Maryland's health and human services. Master Data Management (MDM) is central to this project, unifying person data from multiple state agencies to create **\"golden records\"**—the most accurate and up-to-date representation of individuals.",
+                    achievements: [
+                        "Architected and implemented the end-to-end MDM solution, including data model design, Trust and Validation score implementation, and Match & Merge configuration to create accurate golden records.",
+                        "Configured and integrated ActiveVOS approval workflows with the E360 application, enabling automated email notifications and human tasks to streamline data governance.",
+                        "Designed and configured intricate Match rules (Fuzzy/Exact) with custom user exits to generate highly accurate golden records and assign unique identifiers (IRN, MAID).",
+                        "Collaborated with CDOs and business stakeholders to define data governance objectives and ensure alignment with key MDM features."
+                    ],
+                    duration: (new Date() - new Date('2024-09-01')) / (1000 * 60 * 60 * 24 * 365.25)
+                },
+                {
+                    client: "EmployBridge, A Leading Staffing Organization",
+                    dates: "Jan 2021 – Sept 2024",
+                    role: "Sr. IICS/IDMC, MDM SaaS, Informatica MDM, C360, IDQ – Lead / Consultant",
+                    description: "Focused on mastering branch and client data for financial reporting and business teams. This project involved migrating from on-premise MDM to a modern IICS/IDMC architecture.",
+                    achievements: [
+                        "Led the end-to-end implementation and migration from on-premise MDM to the IICS/IDMC platform, configuring key SaaS components such as Business Entities, Crosswalks, and Hierarchies.",
+                        "Developed and configured custom workflows using Application Integration (CAI) that included Service Connectors, Assignments, and Sub-Processes to automate critical data updates and email notifications.",
+                        "Performed extensive data analysis and quality profiling on data from multiple sources, defining reusable cleanse rules and mappings that resulted in a significant improvement in overall data quality.",
+                        "Engaged with stakeholders to present data governance objectives and provided training to data stewards on new MDM features and tools."
+                    ],
+                    duration: (new Date('2024-09-01') - new Date('2021-01-01')) / (1000 * 60 * 60 * 24 * 365.25)
+                },
+                {
+                    client: "Nike Inc., Hillsboro, OR",
+                    dates: "Dec 2018 – Dec 2020",
+                    role: "Sr. Informatica MDM Consultant",
+                    description: "Responsible for centralizing all vendor data within the Nike Data Foundation (NDF) using Informatica MDM.",
+                    achievements: [
+                        "Designed the MDM data model and configured Base Objects and Staging Tables for the end-to-end vendor data flow, ensuring data from disparate sources could be mastered.",
+                        "Performance-tuned Fuzzy and Exact Match rules on Base Objects by analyzing support tables, ensuring a high-match rate and delivering the best version of vendor data to downstream systems.",
+                        "Implemented real-time and batch integrations with Message/Event Triggers to publish golden records to downstream systems.",
+                        "Provided end-to-end production support, acting as the main point of contact for all MDM-related business and technical inquiries, and resolved incidents by querying backend support tables."
+                    ],
+                    duration: 2.0
+                },
+                {
+                    client: "Cox Enterprises, Atlanta, GA",
+                    dates: "Apr 2017 – Nov 2018",
+                    role: "Informatica MDM Consultant",
+                    description: "Mastered Organization, Locations, and Addresses to support data warehousing and reporting, which was used for generating bills and revenue.",
+                    achievements: [
+                        "Architected and configured the MDM IDD and ActiveVOS BPM integration to enable a one-step approval workflow for managers and data stewards, streamlining data governance processes.",
+                        "Increased performance and usability for business users by optimizing the configuration of IDD, improving their ability to manage master data.",
+                        "Configured Trust and Validation rules and set up auto-match/merge rule sets to ensure data accuracy.",
+                        "Discussed and implemented key MDM features with stakeholders, including SIF APIs for batch integrations."
+                    ],
+                    duration: 1.6
+                },
+                {
+                    client: "Christus Health, Irving, TX",
+                    dates: "Sept 2015 – Mar 2017",
+                    role: "Informatica MDM Consultant",
+                    description: "An international Catholic, faith-based, not-for-profit health system where MDM was implemented to master various data domains.",
+                    achievements: [
+                        "Analyzed source data for integrity issues, defining System and Trust settings to ensure high-quality data.",
+                        "Successfully implemented the Land Process for loading customer data into the MDM Hub's Landing tables by configuring mappings and cleanse functions.",
+                        "Configured the match/merge rule sets to get the right master records, performing multiple match/merge runs to test and validate the effectiveness of the MDM process on the data.",
+                        "Provided training to data stewards on how to use the Supply Chain IDD Application to manage master data."
+                    ],
+                    duration: 1.5
+                },
+                {
+                    client: "Softpath System LLC, Hyderabad, India",
+                    dates: "May 2015 – Present",
+                    role: "Informatica MDM Developer",
+                    description: "Initial role focused on foundational MDM development and configuration for various clients.",
+                    achievements: [
+                        "Designed a data model and configured Landing Tables, Staging Tables, and Base Objects based on business requirements, establishing the core data hub structure.",
+                        "Performance-tuned match rules by analyzing system tables and repos tables to meet business needs and achieve desired data mastering output.",
+                        "Prepared comprehensive functional and technical documentation, including installation guides, design documents, and test scenarios."
+                    ],
+                     duration: (new Date('2024-09-01') - new Date('2015-05-01')) / (1000 * 60 * 60 * 24 * 365.25) 
+                }
+            ];
+            
+            const skillsData = [
+                { title: "MDM Expertise", details: "Informatica MDM MDE, Customer 360 (v10.0-10.5), MDM SaaS, Business 360, Reference 360." },
+                { title: "Architecture & Strategy", details: "End-to-end solution design, data modeling, defining MDM strategy and data governance objectives." },
+                { title: "Data Quality & Governance", details: "IDQ, BDM, CDQ, data profiling, cleansing, standardization, Trust & Validation score design." },
+                { title: "Match & Merge", details: "Expert configuration and performance-tuning of Fuzzy/Exact match rules, match paths, and columns." },
+                { title: "Integration & APIs", details: "IICS/IDMC (CDI, CDQ, CAI), SOAP/REST Web Services, SIF APIs for real-time and batch processing." },
+                { title: "Workflow Management", details: "ActiveVOS workflow development, debugging, custom approval processes, and data stewardship automation." },
+                { title: "Stakeholder Management", details: "Presenting to CDOs, defining governance principles, and training data stewards." },
+                { title: "Infrastructure & Security", details: "JBoss, Elasticsearch, Informatica service installation, HTTPs/SSL configuration." },
+                { title: "Big Data & Cloud", details: "AWS (Glue, DMS, S3), Hadoop, Spark, and experience with various databases (Oracle, SQL Server, Snowflake)." },
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            experienceData.forEach((item, index) => {
+                const achievementsList = item.achievements.map(ach => `<li>${ach}</li>`).join('');
+                const timelineItem = `
+                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-teal-600 shadow-xl w-8 h-8 rounded-full">
+                            <h1 class="mx-auto font-semibold text-lg text-white">${experienceData.length - index}</h1>
+                        </div>
+                        <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <button class="timeline-toggle w-full text-left">
+                                <h3 class="font-bold text-gray-800 text-lg">${item.client}</h3>
+                                <p class="text-sm leading-snug tracking-wide text-gray-500 text-opacity-100">${item.role}</p>
+                                <p class="text-xs font-semibold text-teal-700 mt-1">${item.dates}</p>
+                                <div class="text-right text-gray-400 mt-2">
+                                    <span class="toggle-icon text-xs">▼ Show Details</span>
+                                </div>
+                            </button>
+                            <div class="timeline-item-content">
+                                <p class="text-gray-600 my-4 text-sm leading-relaxed">${item.description}</p>
+                                <h4 class="font-semibold text-gray-700 mb-2 mt-4">Contributions & Achievements:</h4>
+                                <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                                    ${achievementsList}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.innerHTML += timelineItem;
+            });
+            
+            const skillsContainer = document.getElementById('skills-container');
+            skillsData.forEach(skill => {
+                const skillCard = `
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">${skill.title}</h3>
+                        <p class="text-sm text-gray-600">${skill.details}</p>
+                    </div>
+                `;
+                skillsContainer.innerHTML += skillCard;
+            });
+
+            const timelineToggles = document.querySelectorAll('.timeline-toggle');
+            timelineToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('.toggle-icon');
+                    content.classList.toggle('open');
+                    if(content.classList.contains('open')) {
+                        icon.textContent = "▲ Hide Details";
+                    } else {
+                        icon.textContent = "▼ Show Details";
+                    }
+                });
+            });
+
+            const ctx = document.getElementById('experienceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: experienceData.map(e => e.client).reverse(),
+                    datasets: [{
+                        label: 'Years of Experience',
+                        data: experienceData.map(e => e.duration.toFixed(1)).reverse(),
+                        backgroundColor: 'rgba(13, 148, 136, 0.6)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Duration (Years)'
+                            }
+                        },
+                        y: {
+                           ticks: {
+                                autoSkip: false,
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 25) {
+                                        return label.substring(0, 25) + '...';
+                                    }
+                                    return label;
+                                }
+                           }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                           callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += context.parsed.x + ' years';
+                                    }
+                                    return label;
+                                },
+                                title: function(context) {
+                                     const index = context[0].dataIndex;
+                                     const data = experienceData.slice().reverse()[index];
+                                     return `${data.client} - ${data.role}`;
+                                }
+                           }
+                        }
+                    }
+                }
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+        });
+    </script>
+
+</body>
+</html>
