@@ -1,393 +1,548 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Resume | Sai Sumanth Gudiboina</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Serene Professional - Background: #f8f7f4 (Oat), Main Text: #333d47 (Charcoal), Accent: #0d9488 (Teal), Secondary: #a1a1aa (Stone Gray) -->
-    <!-- Application Structure Plan: The SPA is designed with a top-down narrative flow, starting with a high-level summary and allowing users to drill down into specifics. A sticky navigation bar enables non-linear exploration. The core is an interactive vertical timeline for professional experience, which condenses a large amount of text into a manageable, user-driven format. This structure was chosen to make the resume scannable at a glance but also rich in detail upon interaction, which is superior to a static document for user engagement and information retention. -->
-    <!-- Visualization & Content Choices: Report Info: Career history -> Goal: Show career progression and duration -> Viz/Method: Interactive Bar Chart (Chart.js) -> Interaction: Hover for details. Justification: Provides a quick visual summary of time spent in various roles. Report Info: Detailed job responsibilities -> Goal: Organize extensive text -> Method: Interactive collapsible timeline (HTML/JS) -> Interaction: Click to expand/collapse. Justification: Prevents a wall of text, allowing users to focus on roles of interest. Report Info: Skills -> Goal: Present skills clearly -> Method: Grouped skill cards (HTML/Tailwind) -> Interaction: Static visual grouping. Justification: Enhances readability and visual organization over a simple list. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f7f4;
-            color: #333d47;
-        }
-        .nav-link.active {
-            color: #0d9488;
-            font-weight: 600;
-        }
-        .timeline-item-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
-        .timeline-item-content.open {
-            max-height: 2000px;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Resume | Sai Sumanth Gudiboina</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Senior Informatica MDM / IDMC / DQ Consultant and Technical Lead with ~10 years experience. Interactive resume." />
+
+  <style>
+    :root {
+      --bg: #f8f7f4;
+      --card: #ffffff;
+      --ink: #333d47;
+      --muted: #6b7280;
+      --brand: #0d9488;
+      --ring: #99f6e4;
+    }
+    html[data-theme="dark"] {
+      --bg: #0b0e12;
+      --card: #11151b;
+      --ink: #e5e7eb;
+      --muted: #9ca3af;
+      --brand: #2dd4bf;
+      --ring: #134e4a;
+    }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--ink);}
+    .glass { background: color-mix(in srgb, var(--card) 80%, transparent); backdrop-filter: blur(8px);}
+    .nav-link.active { color: var(--brand); font-weight: 700; }
+    .card { background: var(--card); }
+    .chip { border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--ink)); }
+    .chip.active { background: color-mix(in srgb, var(--brand) 12%, transparent); border-color: var(--brand); }
+    @media print {
+      .no-print { display: none !important; }
+      a[href]:after { content: ""; }
+      body { background: #fff; }
+      .card { box-shadow: none !important; border: 1px solid #e5e7eb; }
+    }
+  </style>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sai Sumanth Gudiboina",
+    "jobTitle": "Senior Informatica MDM / IDMC / DQ Consultant, Technical Lead",
+    "email": "mailto:saisumanthgudiboina@gmail.com",
+    "telephone": "+13854955575",
+    "url": "https://www.linkedin.com/in/saisumanthgudiboina/",
+    "knowsAbout": [
+      "Informatica MDM","IDMC/IICS (CDI, CAI, CDQ)","ActiveVOS","Data Quality","Snowflake","AWS Glue/DMS/S3","Address Doctor"
+    ]
+  }
+  </script>
 </head>
 <body class="antialiased">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-xl font-bold text-gray-800">Sai Sumanth Gudiboina</h1>
-                </div>
-                <nav class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Overview</a>
-                        <a href="#experience" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Experience</a>
-                        <a href="#skills" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Skills</a>
-                        <a href="#education" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors">Education</a>
-                    </div>
-                </nav>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-teal-500 hover:bg-gray-100 focus:outline-none">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+  <!-- Header / Nav -->
+  <header class="glass sticky top-0 z-50 border-b border-black/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-2xl grid place-items-center bg-[var(--brand)] text-white font-extrabold">SG</div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold leading-tight">Sai Sumanth Gudiboina</h1>
+          <p class="text-xs sm:text-sm text-[var(--muted)]">Senior Informatica MDM / IDMC / DQ Consultant · Technical Lead</p>
         </div>
-        <div id="mobile-menu" class="md:hidden hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#overview" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Overview</a>
-                <a href="#experience" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Experience</a>
-                <a href="#skills" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Skills</a>
-                <a href="#education" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-teal-600 hover:bg-gray-50">Education</a>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a class="nav-link hover:text-[var(--brand)]" href="#overview">Overview</a>
+        <a class="nav-link hover:text-[var(--brand)]" href="#experience">Experience</a>
+        <a class="nav-link hover:text-[var(--brand)]" href="#skills">Skills</a>
+        <a class="nav-link hover:text-[var(--brand)]" href="#education">Education</a>
+      </nav>
+      <div class="flex items-center gap-2 no-print">
+        <button id="themeToggle" class="px-3 py-2 rounded-xl border chip hover:opacity-80" title="Toggle theme">🌗</button>
+        <button onclick="window.print()" class="px-3 py-2 rounded-xl border chip hover:opacity-80" title="Download / Print PDF">🖨️</button>
+        <button id="mobileMenuBtn" class="md:hidden px-3 py-2 rounded-xl border chip">☰</button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
+        <a class="nav-link py-1" href="#overview">Overview</a>
+        <a class="nav-link py-1" href="#experience">Experience</a>
+        <a class="nav-link py-1" href="#skills">Skills</a>
+        <a class="nav-link py-1" href="#education">Education</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="overview" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="card rounded-2xl p-6 sm:p-8 shadow">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-1">
+          <h2 class="text-2xl sm:text-3xl font-extrabold">Professional Summary</h2>
+          <p class="mt-4 leading-7 text-[var(--muted)]">
+            Results-driven Informatica MDM Lead and Data Management Consultant with ~10 years of experience designing, implementing,
+            and leading enterprise-scale MDM, Data Quality, and Integration programs across public-sector and commercial clients.
+            Proven ability to translate complex business challenges into scalable, governed architectures and deliver high-quality,
+            cross-domain master-data solutions.
+          </p>
+
+          <!-- Leadership & Solution Design highlights -->
+          <div class="mt-6 grid sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl border chip">
+              <h3 class="font-bold">Leadership & Solution Design</h3>
+              <ul class="mt-2 text-sm list-disc pl-5 space-y-1 text-[var(--muted)]">
+                <li>Designed & delivered complete Informatica MDM solutions across multiple domains.</li>
+                <li>Root-cause analysis & MDM-centric solutioning with business stakeholders.</li>
+                <li>POCs, demos, design validations; feedback-driven productionization.</li>
+                <li>Led upgrades for MDM Hub, IDQ, ActiveVOS, Address Doctor, and IICS.</li>
+                <li>Directed end-to-end CRM migration (Microsoft Dynamics → Salesforce).</li>
+              </ul>
             </div>
+            <div class="p-4 rounded-xl border chip">
+              <h3 class="font-bold">Integration & Enablement</h3>
+              <ul class="mt-2 text-sm list-disc pl-5 space-y-1 text-[var(--muted)]">
+                <li>Mentored API teams for real-time MDM integrations (SOAP/REST/JMS).</li>
+                <li>Real-time, batch, and near-real-time orchestration with message triggers.</li>
+                <li>Trained data stewards & business users on E360 and workflows.</li>
+                <li>War rooms & CAB leadership for critical releases and stabilization.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="mt-6 flex flex-wrap items-center gap-3 no-print">
+            <a href="mailto:saisumanthgudiboina@gmail.com" class="px-4 py-2 rounded-xl bg-[var(--brand)] text-white font-semibold hover:opacity-90">Email</a>
+            <button data-copy="+1 (385) 495-5575" class="copy px-4 py-2 rounded-xl border chip">Copy Phone</button>
+            <button data-copy="saisumanthgudiboina@gmail.com" class="copy px-4 py-2 rounded-xl border chip">Copy Email</button>
+            <a class="px-4 py-2 rounded-xl border chip hover:opacity-80" href="https://www.linkedin.com/in/saisumanthgudiboina/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
         </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        
-        <section id="overview" class="mb-16 scroll-mt-20">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Sr. Informatica MDM & Data Management Consultant</h2>
-                <div class="mt-4 flex items-center justify-center space-x-6 text-sm text-gray-500">
-                    <span>+1 (385) 495-5575</span>
-                    <span class="text-gray-300">|</span>
-                    <span>sumanth.gudiboina@gmail.com</span>
-                    <span class="text-gray-300">|</span>
-                    <a href="https://www.linkedin.com/in/saisumanthgudiboina/" target="_blank" class="hover:text-teal-600">LinkedIn</a>
-                </div>
-            </div>
-            
-            <div class="bg-white p-8 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Summary of Experience</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    A senior Informatica MDM and Data Management professional with over <strong>10 years of experience</strong> in building and maintaining robust MDM solutions. Proven expertise in the full lifecycle of data management, from <strong>installation and configuration of MDM, IDQ, and IICS/IDMC services</strong> to <strong>ETL, data profiling, cleansing, and standardization</strong>. Extensive experience in <strong>configuring and troubleshooting key components</strong> such as Match/Merge rules, Trust and Validation rules, and Hierarchies. Skilled in <strong>developing and debugging ActiveVOS workflows</strong> for data governance and approvals. Experienced in working with <strong>on-premise and cloud-based solutions (MDM SaaS)</strong>, including the implementation of Business Entities, Crosswalks, and Ingress/Egress jobs. A strong leader and collaborator, adept at handling production support tickets, leading teams, and interacting with diverse stakeholders to deliver high-quality data solutions.
-                </p>
-
-                <div class="mt-12">
-                     <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Career Timeline Visualization</h3>
-                    <p class="text-center text-gray-500 mb-6">This chart provides a visual overview of the duration of each project engagement. Hover over the bars for more details on the client and role.</p>
-                    <div class="chart-container">
-                        <canvas id="experienceChart"></canvas>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section id="experience" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Professional Experience</h2>
-            <div id="timeline-container" class="relative">
-                <!-- Timeline items will be injected here by JavaScript -->
-            </div>
-        </section>
-
-        <section id="skills" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Core Competencies</h2>
-            <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Skills will be injected here by JavaScript -->
-            </div>
-        </section>
-
-        <section id="education" class="scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-2 border-teal-500 pb-2">Education</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-lg font-semibold text-gray-800">Master’s in Information Systems</h3>
-                <p class="text-gray-600">Stevens-Henager College, Utah – 2016</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md mt-4">
-                <h3 class="text-lg font-semibold text-gray-800">Bachelor’s in Mechanical Engineering</h3>
-                <p class="text-gray-600">Jawaharlal Nehru Technological Institute, Hyderabad, India – 2015</p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-gray-800 mt-16">
-        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-white text-sm">
-            <p>&copy; 2025 Sai Sumanth Gudiboina. All Rights Reserved.</p>
+        <!-- Career timeline chart -->
+        <div class="lg:w-[420px] w-full">
+          <h3 class="font-bold text-lg">Career Timeline</h3>
+          <p class="text-sm text-[var(--muted)]">Hover to see durations</p>
+          <div class="mt-3 h-[320px]">
+            <canvas id="timelineChart" aria-label="Experience timeline chart"></canvas>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+  <!-- Experience -->
+  <section id="experience" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="text-2xl sm:text-3xl font-extrabold">Professional Experience</h2>
+      <div class="no-print flex gap-2">
+        <input id="expSearch" type="search" placeholder="Search experience…" class="px-3 py-2 rounded-xl border chip w-48 sm:w-72" />
+        <button id="toggleAll" class="px-3 py-2 rounded-xl border chip">Expand all</button>
+      </div>
+    </div>
 
-            const experienceData = [
-                {
-                    client: "State of Maryland, DHS – MDThink",
-                    dates: "Sept 2024 – Present",
-                    role: "Sr. Informatica MDM, BDM/IDQ, ActiveVOS – Lead / Consultant",
-                    description: "A cloud-based platform to modernize and unify Maryland's health and human services. Master Data Management (MDM) is central to this project, unifying person data from multiple state agencies to create **\"golden records\"**—the most accurate and up-to-date representation of individuals.",
-                    achievements: [
-                        "Architected and implemented the end-to-end MDM solution, including data model design, Trust and Validation score implementation, and Match & Merge configuration to create accurate golden records.",
-                        "Configured and integrated ActiveVOS approval workflows with the E360 application, enabling automated email notifications and human tasks to streamline data governance.",
-                        "Designed and configured intricate Match rules (Fuzzy/Exact) with custom user exits to generate highly accurate golden records and assign unique identifiers (IRN, MAID).",
-                        "Collaborated with CDOs and business stakeholders to define data governance objectives and ensure alignment with key MDM features."
-                    ],
-                    duration: (new Date() - new Date('2024-09-01')) / (1000 * 60 * 60 * 24 * 365.25)
-                },
-                {
-                    client: "EmployBridge, A Leading Staffing Organization",
-                    dates: "Jan 2021 – Sept 2024",
-                    role: "Sr. IICS/IDMC, MDM SaaS, Informatica MDM, C360, IDQ – Lead / Consultant",
-                    description: "Focused on mastering branch and client data for financial reporting and business teams. This project involved migrating from on-premise MDM to a modern IICS/IDMC architecture.",
-                    achievements: [
-                        "Led the end-to-end implementation and migration from on-premise MDM to the IICS/IDMC platform, configuring key SaaS components such as Business Entities, Crosswalks, and Hierarchies.",
-                        "Developed and configured custom workflows using Application Integration (CAI) that included Service Connectors, Assignments, and Sub-Processes to automate critical data updates and email notifications.",
-                        "Performed extensive data analysis and quality profiling on data from multiple sources, defining reusable cleanse rules and mappings that resulted in a significant improvement in overall data quality.",
-                        "Engaged with stakeholders to present data governance objectives and provided training to data stewards on new MDM features and tools."
-                    ],
-                    duration: (new Date('2024-09-01') - new Date('2021-01-01')) / (1000 * 60 * 60 * 24 * 365.25)
-                },
-                {
-                    client: "Nike Inc., Hillsboro, OR",
-                    dates: "Dec 2018 – Dec 2020",
-                    role: "Sr. Informatica MDM Consultant",
-                    description: "Responsible for centralizing all vendor data within the Nike Data Foundation (NDF) using Informatica MDM.",
-                    achievements: [
-                        "Designed the MDM data model and configured Base Objects and Staging Tables for the end-to-end vendor data flow, ensuring data from disparate sources could be mastered.",
-                        "Performance-tuned Fuzzy and Exact Match rules on Base Objects by analyzing support tables, ensuring a high-match rate and delivering the best version of vendor data to downstream systems.",
-                        "Implemented real-time and batch integrations with Message/Event Triggers to publish golden records to downstream systems.",
-                        "Provided end-to-end production support, acting as the main point of contact for all MDM-related business and technical inquiries, and resolved incidents by querying backend support tables."
-                    ],
-                    duration: 2.0
-                },
-                {
-                    client: "Cox Enterprises, Atlanta, GA",
-                    dates: "Apr 2017 – Nov 2018",
-                    role: "Informatica MDM Consultant",
-                    description: "Mastered Organization, Locations, and Addresses to support data warehousing and reporting, which was used for generating bills and revenue.",
-                    achievements: [
-                        "Architected and configured the MDM IDD and ActiveVOS BPM integration to enable a one-step approval workflow for managers and data stewards, streamlining data governance processes.",
-                        "Increased performance and usability for business users by optimizing the configuration of IDD, improving their ability to manage master data.",
-                        "Configured Trust and Validation rules and set up auto-match/merge rule sets to ensure data accuracy.",
-                        "Discussed and implemented key MDM features with stakeholders, including SIF APIs for batch integrations."
-                    ],
-                    duration: 1.6
-                },
-                {
-                    client: "Christus Health, Irving, TX",
-                    dates: "Sept 2015 – Mar 2017",
-                    role: "Informatica MDM Consultant",
-                    description: "An international Catholic, faith-based, not-for-profit health system where MDM was implemented to master various data domains.",
-                    achievements: [
-                        "Analyzed source data for integrity issues, defining System and Trust settings to ensure high-quality data.",
-                        "Successfully implemented the Land Process for loading customer data into the MDM Hub's Landing tables by configuring mappings and cleanse functions.",
-                        "Configured the match/merge rule sets to get the right master records, performing multiple match/merge runs to test and validate the effectiveness of the MDM process on the data.",
-                        "Provided training to data stewards on how to use the Supply Chain IDD Application to manage master data."
-                    ],
-                    duration: 1.5
-                },
-                {
-                    client: "Softpath System LLC, Hyderabad, India",
-                    dates: "May 2015 – Present",
-                    role: "Informatica MDM Developer",
-                    description: "Initial role focused on foundational MDM development and configuration for various clients.",
-                    achievements: [
-                        "Designed a data model and configured Landing Tables, Staging Tables, and Base Objects based on business requirements, establishing the core data hub structure.",
-                        "Performance-tuned match rules by analyzing system tables and repos tables to meet business needs and achieve desired data mastering output.",
-                        "Prepared comprehensive functional and technical documentation, including installation guides, design documents, and test scenarios."
-                    ],
-                     duration: (new Date('2024-09-01') - new Date('2015-05-01')) / (1000 * 60 * 60 * 24 * 365.25) 
-                }
-            ];
-            
-            const skillsData = [
-                { title: "MDM Expertise", details: "Informatica MDM MDE, Customer 360 (v10.0-10.5), MDM SaaS, Business 360, Reference 360." },
-                { title: "Architecture & Strategy", details: "End-to-end solution design, data modeling, defining MDM strategy and data governance objectives." },
-                { title: "Data Quality & Governance", details: "IDQ, BDM, CDQ, data profiling, cleansing, standardization, Trust & Validation score design." },
-                { title: "Match & Merge", details: "Expert configuration and performance-tuning of Fuzzy/Exact match rules, match paths, and columns." },
-                { title: "Integration & APIs", details: "IICS/IDMC (CDI, CDQ, CAI), SOAP/REST Web Services, SIF APIs for real-time and batch processing." },
-                { title: "Workflow Management", details: "ActiveVOS workflow development, debugging, custom approval processes, and data stewardship automation." },
-                { title: "Stakeholder Management", details: "Presenting to CDOs, defining governance principles, and training data stewards." },
-                { title: "Infrastructure & Security", details: "JBoss, Elasticsearch, Informatica service installation, HTTPs/SSL configuration." },
-                { title: "Big Data & Cloud", details: "AWS (Glue, DMS, S3), Hadoop, Spark, and experience with various databases (Oracle, SQL Server, Snowflake)." },
-            ];
+    <!-- Filters -->
+    <div class="no-print mt-4 flex flex-wrap gap-2 text-sm">
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="MDM">MDM</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="IDMC">IDMC / IICS</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="ActiveVOS">ActiveVOS / CAI</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="DQ">IDQ / DQ</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="AWS">AWS</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="Snowflake">Snowflake</button>
+      <button class="chip px-3 py-1.5 rounded-full filter-btn" data-tag="API">APIs</button>
+    </div>
 
-            const timelineContainer = document.getElementById('timeline-container');
-            experienceData.forEach((item, index) => {
-                const achievementsList = item.achievements.map(ach => `<li>${ach}</li>`).join('');
-                const timelineItem = `
-                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-                        <div class="order-1 w-5/12"></div>
-                        <div class="z-20 flex items-center order-1 bg-teal-600 shadow-xl w-8 h-8 rounded-full">
-                            <h1 class="mx-auto font-semibold text-lg text-white">${experienceData.length - index}</h1>
-                        </div>
-                        <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
-                            <button class="timeline-toggle w-full text-left">
-                                <h3 class="font-bold text-gray-800 text-lg">${item.client}</h3>
-                                <p class="text-sm leading-snug tracking-wide text-gray-500 text-opacity-100">${item.role}</p>
-                                <p class="text-xs font-semibold text-teal-700 mt-1">${item.dates}</p>
-                                <div class="text-right text-gray-400 mt-2">
-                                    <span class="toggle-icon text-xs">▼ Show Details</span>
-                                </div>
-                            </button>
-                            <div class="timeline-item-content">
-                                <p class="text-gray-600 my-4 text-sm leading-relaxed">${item.description}</p>
-                                <h4 class="font-semibold text-gray-700 mb-2 mt-4">Contributions & Achievements:</h4>
-                                <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
-                                    ${achievementsList}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                timelineContainer.innerHTML += timelineItem;
-            });
-            
-            const skillsContainer = document.getElementById('skills-container');
-            skillsData.forEach(skill => {
-                const skillCard = `
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-bold text-lg text-gray-800 mb-2">${skill.title}</h3>
-                        <p class="text-sm text-gray-600">${skill.details}</p>
-                    </div>
-                `;
-                skillsContainer.innerHTML += skillCard;
-            });
+    <div id="experienceList" class="mt-6 grid grid-cols-1 gap-5"></div>
+  </section>
 
-            const timelineToggles = document.querySelectorAll('.timeline-toggle');
-            timelineToggles.forEach(toggle => {
-                toggle.addEventListener('click', () => {
-                    const content = toggle.nextElementSibling;
-                    const icon = toggle.querySelector('.toggle-icon');
-                    content.classList.toggle('open');
-                    if(content.classList.contains('open')) {
-                        icon.textContent = "▲ Hide Details";
-                    } else {
-                        icon.textContent = "▼ Show Details";
-                    }
-                });
-            });
+  <!-- Skills -->
+  <section id="skills" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h2 class="text-2xl sm:text-3xl font-extrabold">Core Competencies & Technical Skills</h2>
 
-            const ctx = document.getElementById('experienceChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: experienceData.map(e => e.client).reverse(),
-                    datasets: [{
-                        label: 'Years of Experience',
-                        data: experienceData.map(e => e.duration.toFixed(1)).reverse(),
-                        backgroundColor: 'rgba(13, 148, 136, 0.6)',
-                        borderColor: 'rgba(13, 148, 136, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (Years)'
-                            }
-                        },
-                        y: {
-                           ticks: {
-                                autoSkip: false,
-                                callback: function(value, index, values) {
-                                    const label = this.getLabelForValue(value);
-                                    if (label.length > 25) {
-                                        return label.substring(0, 25) + '...';
-                                    }
-                                    return label;
-                                }
-                           }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                           callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.x !== null) {
-                                        label += context.parsed.x + ' years';
-                                    }
-                                    return label;
-                                },
-                                title: function(context) {
-                                     const index = context[0].dataIndex;
-                                     const data = experienceData.slice().reverse()[index];
-                                     return `${data.client} - ${data.role}`;
-                                }
-                           }
-                        }
-                    }
-                }
-            });
+    <!-- Category tabs -->
+    <div class="no-print mt-4 flex flex-wrap gap-2 text-sm">
+      <button class="chip px-3 py-1.5 rounded-full tab-btn active" data-tab="competencies">Core Competencies</button>
+      <button class="chip px-3 py-1.5 rounded-full tab-btn" data-tab="tech">Technical Skills</button>
+      <button class="chip px-3 py-1.5 rounded-full tab-btn" data-tab="highlights">Technical Highlights</button>
+    </div>
 
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section');
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (pageYOffset >= sectionTop - 70) {
-                        current = section.getAttribute('id');
-                    }
-                });
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href').includes(current)) {
-                        link.classList.add('active');
-                    }
-                });
-            });
-            
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+    <div id="skillsPanels" class="mt-6 space-y-6">
+      <!-- Populated by JS from your resume text -->
+    </div>
+  </section>
 
+  <!-- Education -->
+  <section id="education" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h2 class="text-2xl sm:text-3xl font-extrabold">Education</h2>
+    <div class="mt-4 grid md:grid-cols-2 gap-4">
+      <div class="card rounded-2xl p-5 shadow">
+        <h3 class="font-bold">Master of Science in Information Systems</h3>
+        <p class="text-[var(--muted)]">Stevens-Henager College, Utah, USA — 2016</p>
+      </div>
+      <div class="card rounded-2xl p-5 shadow">
+        <h3 class="font-bold">Bachelor of Technology in Mechanical Engineering</h3>
+        <p class="text-[var(--muted)]">Jawaharlal Nehru Technological University, Hyderabad, India — 2015</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="mt-10 py-6 text-center text-sm text-[var(--muted)]">
+    © 2025 Sai Sumanth Gudiboina. All Rights Reserved.
+  </footer>
+
+  <script>
+    // ————— Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('sg-theme', t); };
+    (function initTheme(){
+      const saved = localStorage.getItem('sg-theme'); setTheme(saved || 'light');
+    })();
+    themeToggle?.addEventListener('click', () => {
+      const curr = document.documentElement.getAttribute('data-theme');
+      setTheme(curr === 'light' ? 'dark' : 'light');
+    });
+
+    // ————— Mobile menu
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu')?.classList.toggle('hidden');
+    });
+
+    // ————— Copy buttons
+    document.querySelectorAll('.copy').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const txt = btn.getAttribute('data-copy');
+        try { await navigator.clipboard.writeText(txt); btn.textContent = 'Copied!'; setTimeout(()=> btn.textContent='Copy ' + (txt.includes('@')?'Email':'Phone'),1200);}
+        catch(e){ alert(txt); }
+      });
+    });
+
+    // ————— Active nav link on scroll
+    const links = document.querySelectorAll('.nav-link');
+    const sections = [...document.querySelectorAll('section')];
+    window.addEventListener('scroll', () => {
+      let id = '';
+      sections.forEach(s => { if (scrollY >= s.offsetTop - 88) id = s.id; });
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href').slice(1) === id));
+    });
+
+    // ————— Data from your resume (verbatim & condensed where needed)
+    const experience = [
+      {
+        client: "State of Maryland, Department of Human Services (MDThink)",
+        role: "Sr. Informatica MDM / DQ / ActiveVOS Lead Consultant",
+        dates: "Sept 2024 – Present",
+        start: "2024-09-01", end: null,
+        tags: ["MDM","DQ","ActiveVOS","AWS","API"],
+        overview: "MDThink unifies health & human-services data across DHS, CJAMS, CSMS, CCATS, MHC, MORA with a centralized MDM layer and E360/R360 governance integrated with AWS OpenSearch.",
+        bullets: [
+          "Architected person-data mastering across six agencies (landing/staging/base, reference hierarchies, relationships).",
+          "Built IRN/MAID unique identifier framework for cross-system traceability.",
+          "Dynamic trust-score & validation rules for high-confidence golden records.",
+          "ActiveVOS/CAI approval workflows integrated with E360; governed changes & notifications.",
+          "Provisioning: Business/Reference Entities, custom layouts, DQ checks, Java-based external validations.",
+          "Message Triggers & JMS to publish golden-record updates to downstream systems and R360.",
+          "IDQ/BDM pipelines + Address Doctor for profiling, cleansing, enrichment.",
+          "LDAP, HTTPS/SSL, SAM roles; health checks & log monitoring; performance tuning.",
+          "Docs, runbooks, stakeholder reviews; offshore leadership; war rooms & CAB."
+        ],
+        env: "Informatica MDM 10.5 HF1/2, IDQ/BDM 10.5.2, ActiveVOS 9.2.4.6, SQL Server, JBoss EAP 7.2, AWS (Glue/DMS/OpenSearch), Provisioning, Address Doctor 5.x",
+      },
+      {
+        client: "EmployBridge – Leading Industrial Staffing Organization",
+        role: "Sr. Informatica IICS / IDMC / MDM SaaS Lead Consultant",
+        dates: "Jan 2021 – Sept 2024",
+        start: "2021-01-01", end: "2024-09-01",
+        tags: ["IDMC","MDM","C360","R360","DQ","API","Snowflake"],
+        overview: "Operated both on-prem MDM/IDQ and new Cloud MDM (Customer 360, Reference 360, CDQ) as independent ecosystems; enabled governed, high-quality data across Client, Branch, Site, Employee, Finance, Assignment.",
+        bullets: [
+          "End-to-end MDM & DQ ownership: data modeling, landing/staging/base, trust/validation, match-merge, survivorship, publishing.",
+          "Onboarded domains & sources (Salesforce, Dynamics, Bullhorn, Finance) into on-prem & Cloud MDM.",
+          "Deep IDQ profiling: Branch, Client, Site, Employee, Job Orders, Assignments, CRM entities.",
+          "Single-handed CRM migration: Dynamics → Salesforce (extraction, cleansing, mapping, reconciliation) with IDQ.",
+          "Built C360/R360 from scratch: BE/RE, hierarchies, relationships, match models, layouts, SSO/RBAC.",
+          "Cloud admin: tenant setup, users, roles, privileges for C360/R360/CDQ.",
+          "CAI workflows (process objects, service connectors) for approvals/notifications/automation.",
+          "Real-time APIs and batch CDI integration with Salesforce, Bullhorn, Finance.",
+          "E360 via Provisioning for stewards; Control-M orchestration; monitoring and performance tuning."
+        ],
+        env: "IDMC/IICS (MDM SaaS, CDI, CAI, CDQ, C360, R360), Informatica MDM 10.4 HF1, IDQ 10.5.2, Salesforce, Microsoft Dynamics, Bullhorn, Snowflake, SQL Server, JBoss, Address Doctor 5.x, Workato",
+      },
+      {
+        client: "Nike Inc., Hillsboro, OR",
+        role: "Sr. Informatica MDM Consultant",
+        dates: "Dec 2018 – Dec 2020",
+        start: "2018-12-01", end: "2020-12-31",
+        tags: ["MDM","DQ","API","AddressDoctor"],
+        overview: "Vendor Data Mastering within Nike Data Foundation, integrated with Oracle Fusion (middleware), Aravo (source), SAP (target).",
+        bullets: [
+          "Installed & maintained Hub/Cleanse/Resource Kit for vendor mastering.",
+          "Landing/Staging/Base models; IDQ profiling & standardization; Address Doctor.",
+          "Trust/validation, system/trust scores; fuzzy/exact match, rule sets, tokens.",
+          "Hierarchy Manager; Provisioning BE/BE Views; IDD layouts/queries.",
+          "Near real-time publishing via Composite Services & Message/Event Triggers.",
+          "ActiveVOS approvals; automated fault handling.",
+          "SIF/SOAPUI for CRUD & validation; JSON/XML; performance tuning & CAB."
+        ],
+        env: "Informatica MDM 10.0/10.3, IDQ 10.x, Oracle Fusion, SAP, Aravo, ActiveVOS, IDD, Address Doctor, JBoss, SQL Server, Shell, SOAPUI, ServiceNow, JIRA, VersionOne",
+      },
+      {
+        client: "Cox Enterprises, Atlanta, GA",
+        role: "Informatica MDM Consultant",
+        dates: "Apr 2017 – Nov 2018",
+        start: "2017-04-01", end: "2018-11-30",
+        tags: ["MDM","ActiveVOS","IDD","AddressDoctor","API"],
+        overview: "Mastered Organization, Location, Address data; upgraded MDM & Address Doctor; Smart Search; workflows.",
+        bullets: [
+          "Installed MDM Hub/Cleanse/Resource Kit/IDD/ActiveVOS.",
+          "Ingest from Oracle/DB2/Flat Files/SQL Server into Landing.",
+          "Base/Staging/mappings per business rules; Address Doctor cleansing.",
+          "Metadata Manager for promotion; IDD optimization; hierarchy relationships.",
+          "Match paths/columns/rule sets; auto match/merge; trust & validation.",
+          "ActiveVOS + IDD one-step approvals; Data/Merge Manager stewardship.",
+          "SIF services; Java User Exits; XML/SOAP scripts; performance tuning."
+        ],
+        env: "Informatica MDM 10.x, PowerCenter/Analyst 9.5.1, Oracle 11g, Address Doctor, WebLogic, Java 1.7, SOAPUI, Eclipse, Linux/Windows",
+      },
+      {
+        client: "Softpath Systems LLC, Hyderabad, India",
+        role: "Informatica MDM Developer",
+        dates: "Sept 2015 – Mar 2017",
+        start: "2015-09-01", end: "2017-03-31",
+        tags: ["MDM","AddressDoctor","SIF","JBoss"],
+        overview: "Multi-Domain MDM to centralize & govern enterprise data; full-cycle setup from installation to governance.",
+        bullets: [
+          "Installed Hub/Cleanse/JBoss; profiled sources; designed data model.",
+          "Source Systems, Trust/Validation, Landing/Staging/Base Objects.",
+          "Lookups, reference tables, relationships, hierarchies, queries, packages.",
+          "Cleanse/standardization functions; Address Doctor validation.",
+          "Fuzzy/exact rules, rule sets, match paths; tokenization & optimization.",
+          "End-to-end Landing→Merging lifecycle; SAM roles; SIF for automation.",
+          "Monitoring repo tables; technical docs & installation guides."
+        ],
+        env: "Informatica Multi-Domain MDM, Oracle, Address Doctor, SOAPUI, JBoss, SAM, Linux",
+      }
+    ];
+
+    const highlights = [
+      "MDM solution design: data-modeling, landing/staging/base, trust & validation, match-merge optimization.",
+      "Survivorship & governance: POCs, iterative feedback with business/tech stakeholders.",
+      "Upgrades & migrations: MDM, IDQ, ActiveVOS, Address Doctor, IICS (environment validation).",
+      "IDMC services (CDI, CAI, CDQ): Taskflows, mappings, address verifications, custom approval workflows.",
+      "C360/R360/Business 360: SSO/RBAC; Provisioning: BE/RE, views, layouts, hierarchies.",
+      "ActiveVOS/CAI workflows; external calls; human tasks with escalations & reuse.",
+      "Interfaces: SOAP/REST/SIF for real-time/near-real-time/batch; JMS triggers & publishing.",
+      "Platforms: AWS (Glue, DMS, S3, OpenSearch), Snowflake; hybrid mastering & publishing.",
+      "Customizations: Java (User Exits, Cleanse Adapters, External Calls), Python, Shell.",
+      "Admin: Hub/Cleanse/Process Servers, Secure Agents, SSL/HTTPS, LDAP/SSO, SAM, repo mgmt, migrations."
+    ];
+
+    const competencies = [
+      { title:"Master Data Management", items:"MDM Architecture, Data Modeling, Match-Merge, Trust & Validation, Golden Record Publishing, Stewardship" },
+      { title:"Data Quality & Integration", items:"IDQ/BDM, Cleansing, Profiling, ETL Pipelines, Reusable Mapplets/Rules, Address Doctor, Governance Frameworks" },
+      { title:"Cloud MDM & Automation", items:"IICS/IDMC (CDI, CAI, CDQ), C360/R360/B360, Mappings/Taskflows, Custom Workflows, Events, DQ Rule Specs" },
+      { title:"Workflow Design & BPM", items:"ActiveVOS & CAI, Approvals/Merge, Human Tasks, Sub-Processes, Service Connectors, E360 Integration" },
+      { title:"E360 & Provisioning", items:"Business/Reference Entities, Hierarchies, Tasks/Triggers, RBAC, Custom Layouts, DQ Checks, External Calls" },
+      { title:"Integration & APIs", items:"REST/SOAP/BES/SIF, Real-time & Batch, JMS, Event-Driven, Downstream Publishing" },
+      { title:"Cloud & Data Platforms", items:"AWS (Glue, DMS, S3, OpenSearch), Snowflake, Hybrid Integrations" },
+      { title:"Programming & Scripting", items:"Java (User Exits/External Calls), Python, PySpark, Shell, Automation/Validation Frameworks" },
+      { title:"Administration & Infra", items:"MDM Hub/Cleanse/Process, Secure Agents, Connectors, HTTPS/SSL, LDAP/SSO, SAM, Repos, Prod Support" },
+      { title:"Leadership & Delivery", items:"Client Engagement, Solution Design, Governance, Mentoring, Stakeholder Comms, CAB/War-Room" }
+    ];
+
+    const techSkills = [
+      { cat:"MDM & Data Governance", val:"Informatica MDM (10.0–10.5), Customer 360, Reference 360, Business 360, Entity 360, Provisioning, ActiveVOS 9.x, IDQ/BDM 10.4–10.5, IDD" },
+      { cat:"Cloud & Integration", val:"IDMC/IICS (CDI, CAI, CDQ), AWS (Glue, DMS, S3, OpenSearch), Snowflake, Dynamics CRM, Salesforce, Bullhorn" },
+      { cat:"Workflow & Automation", val:"ActiveVOS BPM, CAI, Human Tasks, Service Connectors, Sub-Processes, Email/Notifications, Approval/Merge" },
+      { cat:"Data Quality", val:"IDQ, BDM, Address Doctor 5.x, Parsing/Labeling, Cleansing/Profiling, Standardization, Validation, Rule Specs" },
+      { cat:"Integration & APIs", val:"SOAP, REST, SIF batch ops, JMS triggers, EDA, BES APIs" },
+      { cat:"Databases", val:"Oracle, MS SQL Server, PostgreSQL, Snowflake, MySQL" },
+      { cat:"Programming", val:"Java (User Exits, External Calls, Cleanse Adapters), Python, Shell (Bash/Korn), PL/SQL" },
+      { cat:"Big Data", val:"Hadoop, HDFS, Spark, Hive, Sqoop, Kafka, MapReduce, HBase" },
+      { cat:"App Servers", val:"JBoss EAP 7.x, WebLogic 12c, WebSphere 9.x" },
+      { cat:"Tools", val:"Postman, SOAP UI, Eclipse, IntelliJ, Control-M, JIRA, ServiceNow" },
+      { cat:"OS", val:"Windows (7–11, Server), Linux (Ubuntu/Red Hat), Unix (AIX/Solaris)" }
+    ];
+
+    // ————— Experience rendering
+    const list = document.getElementById('experienceList');
+    function yearsBetween(start, end) {
+      const s = new Date(start);
+      const e = end ? new Date(end) : new Date();
+      return ((e - s) / (1000*60*60*24*365.25));
+    }
+
+    function renderExperience(items) {
+      list.innerHTML = '';
+      items.forEach((x, idx) => {
+        const dur = yearsBetween(x.start, x.end);
+        const id = 'exp-'+idx;
+        const tagBadges = x.tags.map(t=>`<span class="text-xs px-2 py-1 rounded-full border chip">${t}</span>`).join(' ');
+        const bullets = x.bullets.map(b=>`<li class="ml-5 list-disc">${b}</li>`).join('');
+        const card = document.createElement('article');
+        card.className = 'card rounded-2xl p-5 shadow border border-black/5';
+        card.setAttribute('data-tags', x.tags.join(' '));
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg sm:text-xl font-extrabold">${x.client}</h3>
+              <p class="text-sm"><span class="font-semibold">${x.role}</span> · <span class="text-[var(--muted)]">${x.dates}</span> · <span class="text-[var(--brand)] font-semibold">${dur.toFixed(1)} yrs</span></p>
+              <div class="mt-2 flex flex-wrap gap-1.5">${tagBadges}</div>
+            </div>
+            <button class="toggle no-print px-3 py-1.5 rounded-xl border chip" aria-controls="${id}">Show</button>
+          </div>
+          <div id="${id}" class="mt-4 hidden">
+            <p class="text-[var(--muted)]">${x.overview}</p>
+            <h4 class="mt-3 font-bold">Key Contributions & Achievements</h4>
+            <ul class="mt-2 space-y-1 text-sm">${bullets}</ul>
+            <p class="mt-3 text-xs text-[var(--muted)]"><span class="font-semibold">Environment:</span> ${x.env}</p>
+          </div>
+        `;
+        card.querySelector('.toggle').addEventListener('click', (e)=>{
+          const panel = card.querySelector('#'+id);
+          const open = panel.classList.toggle('hidden');
+          e.currentTarget.textContent = open ? 'Show' : 'Hide';
         });
-    </script>
+        list.appendChild(card);
+      });
+    }
+    renderExperience(experience);
 
+    // ————— Search & Filter
+    const search = document.getElementById('expSearch');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    let activeTags = new Set();
+
+    function applyFilters() {
+      const term = (search.value || '').toLowerCase();
+      const cards = list.querySelectorAll('article');
+      cards.forEach(c=>{
+        const text = c.textContent.toLowerCase();
+        const tags = (c.getAttribute('data-tags')||'').split(' ');
+        const tagMatch = activeTags.size === 0 || [...activeTags].every(t => tags.includes(t));
+        const termMatch = text.includes(term);
+        c.style.display = (tagMatch && termMatch) ? '' : 'none';
+      });
+    }
+    search.addEventListener('input', applyFilters);
+    filterBtns.forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const t = b.getAttribute('data-tag');
+        if (b.classList.toggle('active')) activeTags.add(t); else activeTags.delete(t);
+        applyFilters();
+      });
+    });
+
+    // Expand/Collapse all
+    let expanded = false;
+    document.getElementById('toggleAll').addEventListener('click', (e)=>{
+      expanded = !expanded;
+      e.currentTarget.textContent = expanded ? 'Collapse all' : 'Expand all';
+      list.querySelectorAll('article').forEach(card=>{
+        const btn = card.querySelector('.toggle');
+        const panel = card.querySelector('div[id^="exp-"]');
+        if (expanded && panel.classList.contains('hidden')) { panel.classList.remove('hidden'); btn.textContent = 'Hide'; }
+        if (!expanded && !panel.classList.contains('hidden')) { panel.classList.add('hidden'); btn.textContent = 'Show'; }
+      });
+    });
+
+    // ————— Skills panels
+    const panels = document.getElementById('skillsPanels');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    function renderPanels() {
+      panels.innerHTML = `
+        <div id="competencies" class="panel">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${competencies.map(c=>`
+              <div class="card rounded-2xl p-5 shadow">
+                <h3 class="font-bold">${c.title}</h3>
+                <p class="mt-2 text-sm text-[var(--muted)]">${c.items}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div id="tech" class="panel hidden">
+          <div class="grid md:grid-cols-2 gap-4">
+            ${techSkills.map(t=>`
+              <div class="card rounded-2xl p-5 shadow">
+                <h3 class="font-bold">${t.cat}</h3>
+                <p class="mt-2 text-sm text-[var(--muted)]">${t.val}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div id="highlights" class="panel hidden">
+          <div class="card rounded-2xl p-5 shadow">
+            <ul class="list-disc ml-6 space-y-2 text-[var(--muted)]">
+              ${highlights.map(h=>`<li>${h}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+    renderPanels();
+
+    tabBtns.forEach(b=>{
+      b.addEventListener('click', ()=>{
+        tabBtns.forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        const tab = b.getAttribute('data-tab');
+        panels.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));
+        document.getElementById(tab).classList.remove('hidden');
+      });
+    });
+
+    // ————— Timeline chart
+    const chartLabels = experience.map(e => e.client);
+    const chartData = experience.map(e => Number(yearsBetween(e.start, e.end).toFixed(1)));
+    const ctx = document.getElementById('timelineChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartLabels,
+        datasets: [{ label: 'Years', data: chartData, borderWidth: 1 }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: 'Years' } },
+          y: { ticks: { autoSkip: false } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (ctx)=> experience[ctx[0].dataIndex].client + ' — ' + experience[ctx[0].dataIndex].role,
+              label: (ctx)=> `${ctx.parsed.x} years`
+            }
+          }
+        }
+      }
+    });
+
+  </script>
 </body>
 </html>
